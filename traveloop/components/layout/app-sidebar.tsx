@@ -8,6 +8,7 @@ import {
   Map,
   Settings,
   Ticket,
+  Compass,
 } from "lucide-react";
 
 import type { NavItem } from "@/types/navigation";
@@ -25,7 +26,8 @@ import {
 
 const navItems: NavItem[] = [
   { title: "Overview", href: "/app", icon: LayoutDashboard },
-  { title: "Trips", href: "/app/trips", icon: Map, badge: "Soon" },
+  { title: "Discover", href: "/app/discover", icon: Compass },
+  { title: "Trips", href: "/app/trips", icon: Map },
   { title: "Bookings", href: "/app/bookings", icon: Ticket, badge: "Soon" },
   {
     title: "Analytics",
