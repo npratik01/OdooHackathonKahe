@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  LineChart,
-  Map,
-  Settings,
-  Ticket,
   Compass,
+  Map,
+  BookOpen,
+  Wallet,
+  Settings,
+  LogOut,
+  Plane
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 import type { NavItem } from "@/types/navigation";
 import { useUiStore } from "@/store/ui-store";
@@ -25,52 +27,55 @@ import {
 } from "@/components/ui/sheet";
 
 const navItems: NavItem[] = [
-  { title: "Overview", href: "/app", icon: LayoutDashboard },
-  { title: "Discover", href: "/app/discover", icon: Compass },
-  { title: "Trips", href: "/app/trips", icon: Map },
-  { title: "Bookings", href: "/app/bookings", icon: Ticket, badge: "Soon" },
-  {
-    title: "Analytics",
-    href: "/app/analytics",
-    icon: LineChart,
-    badge: "Soon",
-  },
-  { title: "Settings", href: "/app/settings", icon: Settings, badge: "Soon" },
+  { title: "Explore", href: "/app/discover", icon: Compass },
+  { title: "My Trips", href: "/app/trips", icon: Map },
+  { title: "Journal", href: "/app/journal", icon: BookOpen, badge: "New" },
+  { title: "Budget", href: "/app/budget", icon: Wallet },
+  { title: "Settings", href: "/app/settings", icon: Settings },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-14 items-center px-4">
-        <Link href="/app" className="flex items-center gap-2 font-semibold">
-          <span className="bg-sidebar-primary text-sidebar-primary-foreground inline-flex h-7 w-7 items-center justify-center rounded-md">
-            T
-          </span>
+    <div className="flex h-full flex-col backdrop-blur-xl bg-background/60">
+      <div className="flex h-16 items-center px-6">
+        <Link href="/app" className="flex items-center gap-3 font-bold text-xl tracking-tight text-primary drop-shadow-sm transition-transform hover:scale-105">
+          <div className="bg-gradient-to-br from-primary to-accent text-white p-1.5 rounded-xl shadow-lg shadow-primary/30">
+            <Plane className="h-5 w-5" />
+          </div>
           <span>Traveloop</span>
         </Link>
       </div>
-      <Separator />
+      
+      <div className="px-4 py-2">
+        <Separator className="bg-border/50" />
+      </div>
 
-      <nav className="flex-1 space-y-1 p-2">
+      <nav className="flex-1 space-y-2 p-4">
         {navItems.map((item) => {
-          const active = pathname === item.href;
+          // If pathname starts with href, mark active
+          const active = pathname === item.href || (item.href !== "/app" && pathname.startsWith(item.href));
           const Icon = item.icon;
 
           return (
             <Button
               key={item.href}
-              variant={active ? "secondary" : "ghost"}
-              className={cn("w-full justify-start", active && "font-medium")}
+              variant={active ? "default" : "ghost"}
+              className={cn(
+                "w-full justify-start h-11 px-4 transition-all duration-300 rounded-xl",
+                active 
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/25 font-semibold" 
+                  : "hover:bg-primary/10 hover:text-primary font-medium text-muted-foreground"
+              )}
               asChild
               onClick={onNavigate}
             >
               <Link href={item.href}>
-                {Icon ? <Icon className="mr-2 h-4 w-4" /> : null}
-                <span className="flex-1 truncate">{item.title}</span>
+                {Icon ? <Icon className={cn("mr-3 h-5 w-5", active ? "text-primary-foreground" : "text-muted-foreground")} /> : null}
+                <span className="flex-1 truncate text-base">{item.title}</span>
                 {item.badge ? (
-                  <Badge variant="secondary" className="ml-2">
+                  <Badge variant="secondary" className={cn("ml-2", active ? "bg-white/20 text-white hover:bg-white/30" : "")}>
                     {item.badge}
                   </Badge>
                 ) : null}
@@ -80,10 +85,15 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
 
-      <div className="p-4">
-        <div className="bg-card text-muted-foreground rounded-lg border p-3 text-sm">
-          Connect PostgreSQL + run Prisma migrations to unlock real data.
-        </div>
+      <div className="p-4 space-y-4">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-11 px-4 rounded-xl font-medium transition-colors"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
+          <LogOut className="mr-3 h-5 w-5" />
+          Log out
+        </Button>
       </div>
     </div>
   );
@@ -91,7 +101,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppSidebarDesktop() {
   return (
-    <aside className="bg-sidebar text-sidebar-foreground hidden w-72 border-r md:flex md:flex-col">
+    <aside className="hidden w-72 md:flex md:flex-col border-r border-border/40 shadow-sm relative z-20">
       <SidebarContent />
     </aside>
   );
@@ -105,7 +115,7 @@ export function AppSidebarMobile() {
     <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <SheetContent
         side="left"
-        className="bg-sidebar text-sidebar-foreground w-72 p-0"
+        className="w-72 p-0 border-r-0 bg-transparent"
       >
         <SheetHeader className="sr-only">
           <SheetTitle>Navigation</SheetTitle>

@@ -14,9 +14,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <SessionProvider>
-      <div className="bg-background text-foreground min-h-dvh">
+      <div className="bg-background text-foreground min-h-dvh relative overflow-hidden">
+        {/* Soft immersive background glow for the entire app */}
+        <div className="pointer-events-none absolute fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background z-0" />
+        
         <AppSidebarMobile />
-        <div className="flex min-h-dvh">
+        <div className="flex min-h-dvh relative z-10">
           <AppSidebarDesktop />
           <div className="flex min-w-0 flex-1 flex-col">
             <AppHeader />
