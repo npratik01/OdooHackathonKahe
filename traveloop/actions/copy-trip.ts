@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { TripVisibility } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-utils";
 
 export async function copyTrip(slug: string) {
@@ -100,7 +100,7 @@ export async function copyTrip(slug: string) {
         tripStopId: note.tripStopId ? stopIdMap.get(note.tripStopId) : null,
         title: note.title,
         content: note.content,
-        visibility: "PRIVATE", // New notes are private by default
+        visibility: "PRIVATE" as const, // New notes are private by default
       })),
     });
   }

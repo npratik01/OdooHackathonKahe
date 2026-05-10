@@ -5,6 +5,8 @@ import { getPublicTrip } from "@/actions/share";
 import { CopyTripButton } from "@/components/trips/copy-trip-button";
 import { Badge } from "@/components/ui/badge";
 
+type PublicTrip = NonNullable<Awaited<ReturnType<typeof getPublicTrip>>>;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const trip = await getPublicTrip(slug);
@@ -107,7 +109,7 @@ export default async function PublicTripPage({ params }: { params: Promise<{ slu
           </div>
         ) : (
           <div className="space-y-8">
-            {trip.stops.map((stop, index) => (
+            {trip.stops.map((stop: PublicTrip["stops"][number], index: number) => (
               <div key={stop.id} className="relative pl-8 sm:pl-10">
                 {/* Timeline Line */}
                 {index !== trip.stops.length - 1 && (
@@ -137,7 +139,7 @@ export default async function PublicTripPage({ params }: { params: Promise<{ slu
                     <div className="mt-6 space-y-4">
                       <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Activities</h4>
                       <ul className="space-y-3">
-                        {stop.activities.map(act => (
+                        {stop.activities.map((act: PublicTrip["stops"][number]["activities"][number]) => (
                           <li key={act.id} className="flex items-start gap-3 rounded-lg bg-muted/40 p-3">
                             <div className="flex-1">
                               <p className="font-medium">{act.title}</p>
@@ -173,7 +175,7 @@ export default async function PublicTripPage({ params }: { params: Promise<{ slu
               <h2 className="text-2xl font-bold tracking-tight">Travel Notes</h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {trip.travelNotes.map(note => (
+              {trip.travelNotes.map((note: PublicTrip["travelNotes"][number]) => (
                 <div key={note.id} className="rounded-xl border bg-card p-5 shadow-sm">
                   {note.title && <h3 className="font-semibold mb-2">{note.title}</h3>}
                   <div 

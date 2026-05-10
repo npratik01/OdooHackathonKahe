@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { TripVisibility } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-utils";
 
 function generateSlug(name: string): string {

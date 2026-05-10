@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip as RechartsTooltip, Bar, BarChart, XAxis, YAxis, CartesianGrid } from "recharts";
+import type { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { Expense } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -76,7 +77,7 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
                   ))}
                 </Pie>
                 <RechartsTooltip 
-                  formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Total"]}
+                  formatter={(value: ValueType | undefined) => [`$${Number(value ?? 0).toFixed(2)}`, "Total"]}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
               </PieChart>
@@ -126,7 +127,7 @@ export function ExpenseCharts({ expenses }: ExpenseChartsProps) {
                 />
                 <RechartsTooltip 
                   cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                  formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Spent"]}
+                  formatter={(value: ValueType | undefined) => [`$${Number(value ?? 0).toFixed(2)}`, "Spent"]}
                   labelFormatter={(label) => new Date(label).toLocaleDateString()}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />

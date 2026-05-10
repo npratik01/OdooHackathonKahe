@@ -4,7 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
-import { Trip, TripStatus, TripVisibility } from "@prisma/client";
+import { Trip, TripStatus } from "@prisma/client";
 
 import { requireAuth } from "@/lib/auth-utils";
 import { prisma } from "@/lib/db";
@@ -14,7 +14,7 @@ import { TripFormData, TripSchema } from "@/lib/validations/trips";
 
 export async function uploadImage(formData: FormData): Promise<{ url?: string; error?: string }> {
   try {
-    const user = await requireAuth();
+    await requireAuth();
 
     const file = formData.get("image") as File;
     if (!file || !(file instanceof File)) return { error: "No file provided" };

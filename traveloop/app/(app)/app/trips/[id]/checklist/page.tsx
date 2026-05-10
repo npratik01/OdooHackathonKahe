@@ -7,16 +7,16 @@ export const metadata = {
 };
 
 interface ChecklistPageProps {
-  params: Promise<{ tripId: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function ChecklistPage({ params }: ChecklistPageProps) {
-  const { tripId } = await params;
-  const items = await getChecklistItems(tripId);
+  const { id } = await params;
+  const items = await getChecklistItems(id);
 
   return (
     <ChecklistModule
-      tripId={tripId}
+      tripId={id}
       initialItems={items.map((item) => ({
         id: item.id,
         title: item.title,

@@ -7,16 +7,16 @@ export const metadata = {
 };
 
 interface NotesPageProps {
-  params: Promise<{ tripId: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function NotesPage({ params }: NotesPageProps) {
-  const { tripId } = await params;
-  const notes = await getTravelNotes(tripId);
+  const { id } = await params;
+  const notes = await getTravelNotes(id);
 
   return (
     <NotesModule
-      tripId={tripId}
+      tripId={id}
       initialNotes={notes.map((n) => ({
         id: n.id,
         title: n.title ?? null,

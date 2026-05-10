@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { DollarSign, MapPin, Star } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import { DiscoveredActivity } from "@/lib/data/mock-discovery";
 import { AddToItineraryModal } from "@/components/discovery/add-to-itinerary-modal";
 import { Badge } from "@/components/ui/badge";

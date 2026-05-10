@@ -31,6 +31,7 @@ export function AddStopModal({ tripId }: AddStopModalProps) {
   const addStopToStore = useItineraryStore((s) => s.addStop);
 
   const form = useForm<TripStopFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(TripStopSchema) as any,
     defaultValues: {
       name: "",

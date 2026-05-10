@@ -30,6 +30,7 @@ export function SetBudgetModal({ tripId, currentBudget }: SetBudgetModalProps) {
   const [error, setError] = useState<string>();
 
   const form = useForm<BudgetFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(BudgetSchema) as any,
     defaultValues: {
       budget: currentBudget || undefined,
@@ -61,7 +62,7 @@ export function SetBudgetModal({ tripId, currentBudget }: SetBudgetModalProps) {
         <DialogHeader>
           <DialogTitle>Set Trip Budget</DialogTitle>
           <DialogDescription>
-            Enter your total target budget for this trip. We'll alert you if you go over.
+            Enter your total target budget for this trip. We&apos;ll alert you if you go over.
           </DialogDescription>
         </DialogHeader>
 

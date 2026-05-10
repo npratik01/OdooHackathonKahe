@@ -5,11 +5,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, ImageIcon, Loader2 } from "lucide-react";
+import { ImageIcon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Trip, TripVisibility } from "@prisma/client";
 import { createTrip, updateTrip, uploadImage } from "@/actions/trips";
-import { cn } from "@/lib/utils";
 import { TripFormData, TripSchema } from "@/lib/validations/trips";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
@@ -31,15 +30,16 @@ export function TripForm({ initialData }: TripFormProps) {
   const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<TripFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(TripSchema) as any,
     defaultValues: {
-      name: initialData?.name || "",
-      destination: initialData?.destination || "",
-      description: initialData?.description || "",
-      coverImage: initialData?.coverImage || "",
-      startDate: initialData?.startDate || new Date(),
-      endDate: initialData?.endDate || new Date(),
-      visibility: initialData?.visibility || TripVisibility.PRIVATE,
+      name: initialData?.name ?? "",
+      destination: initialData?.destination ?? "",
+      description: initialData?.description ?? undefined,
+      coverImage: initialData?.coverImage ?? undefined,
+      startDate: initialData?.startDate ?? new Date(),
+      endDate: initialData?.endDate ?? new Date(),
+      visibility: initialData?.visibility ?? TripVisibility.PRIVATE,
     },
   });
 
@@ -75,7 +75,14 @@ export function TripForm({ initialData }: TripFormProps) {
         const res = await updateTrip(initialData.id, values);
         if (res?.error) throw new Error(res.error);
       } else {
-        await createTrip(values);
+        await createTrip({
+          name: values.name,
+          destination: values.destination,
+          startDate: values.startDate,
+          endDate: values.endDate,
+          description: values.description ?? undefined,
+          coverImage: values.coverImage ?? undefined,
+        });
       }
       
       setSuccess(`Trip ${initialData ? "updated" : "created"} successfully!`);

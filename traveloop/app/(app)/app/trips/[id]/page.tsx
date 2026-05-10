@@ -113,7 +113,7 @@ export default async function TripDetailsPage({ params, searchParams }: TripDeta
             initialItems={checklistItems.map((item) => ({
               id: item.id,
               title: item.title,
-              category: item.category as any, // type adjustment to match prisma client
+              category: item.category,
               isDone: item.isDone,
             }))}
           />

@@ -6,7 +6,6 @@ import { TripStopWithActivities } from "@/actions/itinerary";
 import { useItineraryStore } from "@/store/itinerary-store";
 import { CalendarView } from "@/components/itinerary/calendar-view";
 import { StopList } from "@/components/itinerary/stop-list";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ItineraryBuilderProps {

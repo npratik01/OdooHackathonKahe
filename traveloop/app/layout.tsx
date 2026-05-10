@@ -38,7 +38,7 @@ export default function RootLayout({
         "h-full antialiased",
       )}
     >
-      <body className="bg-background text-foreground min-h-dvh">
+      <body suppressHydrationWarning className="bg-background text-foreground min-h-dvh">
         <SessionProvider>
           <ThemeProvider
             attribute="class"

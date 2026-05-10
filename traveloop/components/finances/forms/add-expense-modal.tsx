@@ -33,6 +33,7 @@ export function AddExpenseModal({ tripId, stops }: AddExpenseModalProps) {
   const [error, setError] = useState<string>();
 
   const form = useForm<ExpenseFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(ExpenseSchema) as any,
     defaultValues: {
       amount: 0,

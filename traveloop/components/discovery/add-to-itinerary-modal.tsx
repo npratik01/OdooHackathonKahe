@@ -105,7 +105,7 @@ export function AddToItineraryModal({ activity }: AddToItineraryModalProps) {
         <DialogHeader>
           <DialogTitle>Add to Itinerary</DialogTitle>
           <DialogDescription>
-            Select a trip and a destination stop to add "{activity.title}" to your plans.
+            Select a trip and a destination stop to add &ldquo;{activity.title}&rdquo; to your plans.
           </DialogDescription>
         </DialogHeader>
 

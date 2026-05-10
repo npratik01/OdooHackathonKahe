@@ -38,7 +38,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
             <div className="text-4xl mb-4">🔍</div>
             <h3 className="text-lg font-semibold">No destinations found</h3>
             <p className="text-muted-foreground text-sm max-w-sm">
-              Try adjusting your search query or removing country filters to find what you're looking for.
+              Try adjusting your search query or removing country filters to find what you&apos;re looking for.
             </p>
           </div>
         ) : (

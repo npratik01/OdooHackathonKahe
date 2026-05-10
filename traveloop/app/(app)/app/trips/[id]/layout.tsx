@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface TripLayoutProps {
   children: ReactNode;
-  params: Promise<{ tripId: string }>;
+  params: Promise<{ id: string }>;
 }
 
 interface NavTabProps {
@@ -38,11 +38,11 @@ export default async function TripDetailLayout({
   children,
   params,
 }: TripLayoutProps) {
-  const { tripId } = await params;
+  const { id } = await params;
 
   let trip;
   try {
-    trip = await getTripById(tripId);
+    trip = await getTripById(id);
   } catch {
     notFound();
   }
@@ -70,12 +70,12 @@ export default async function TripDetailLayout({
       {/* Tab navigation */}
       <div className="flex gap-1 border-b pb-1">
         <TabLink
-          href={`/app/trips/${tripId}/checklist`}
+          href={`/app/trips/${id}/checklist`}
           icon={CheckSquare}
           label="Packing Checklist"
         />
         <TabLink
-          href={`/app/trips/${tripId}/notes`}
+          href={`/app/trips/${id}/notes`}
           icon={NotebookText}
           label="Travel Notes"
         />

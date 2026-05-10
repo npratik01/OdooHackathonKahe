@@ -34,6 +34,7 @@ export function AddActivityModal({ stopId }: AddActivityModalProps) {
   const setStops = useItineraryStore((s) => s.setStops);
 
   const form = useForm<ActivityFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(ActivitySchema) as any,
     defaultValues: {
       title: "",
