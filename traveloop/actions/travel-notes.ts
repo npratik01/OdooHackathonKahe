@@ -68,7 +68,7 @@ export async function createTravelNote(
     },
   });
 
-  revalidatePath(`/app/trips/${tripId}/notes`);
+  revalidatePath(`/app/trips/${tripId}`);
   return note;
 }
 
@@ -90,7 +90,7 @@ export async function updateTravelNote(
     data: { title: title.trim() || null, content },
   });
 
-  revalidatePath(`/app/trips/${note.tripId}/notes`);
+  revalidatePath(`/app/trips/${note.tripId}`);
 }
 
 // ── Delete ─────────────────────────────────────────────────────────────────
@@ -102,5 +102,5 @@ export async function deleteTravelNote(noteId: string) {
 
   await prisma.travelNote.delete({ where: { id: noteId } });
 
-  revalidatePath(`/app/trips/${note.tripId}/notes`);
+  revalidatePath(`/app/trips/${note.tripId}`);
 }

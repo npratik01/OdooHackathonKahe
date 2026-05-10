@@ -5,7 +5,6 @@ import Link from "next/link";
 import { TripStatus } from "@prisma/client";
 import type { RecentTrip } from "@/actions/dashboard";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -52,7 +51,6 @@ function formatDateRange(start: Date, end: Date): string {
   const s = new Date(start);
   const e = new Date(end);
   const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" };
-  const year = e.getFullYear();
   return `${s.toLocaleDateString("en", opts)} – ${e.toLocaleDateString("en", { ...opts, year: "numeric" })}`;
 }
 

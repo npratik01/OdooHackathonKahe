@@ -4,10 +4,14 @@ import { Calendar, Globe2, Lock, MapPin } from "lucide-react";
 import { getItinerary } from "@/actions/itinerary";
 import { getTripById } from "@/actions/trips";
 import { getExpenses } from "@/actions/finances";
+import { getChecklistItems } from "@/actions/checklist";
+import { getTravelNotes } from "@/actions/travel-notes";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ItineraryBuilder } from "@/components/itinerary/itinerary-builder";
 import { FinanceDashboard } from "@/components/finances/finance-dashboard";
+import { ChecklistModule } from "@/components/checklist/checklist-module";
+import { NotesModule } from "@/components/notes/notes-module";
 
 export const metadata = {
   title: "Trip Details | Traveloop",
@@ -15,16 +19,20 @@ export const metadata = {
 
 interface TripDetailsPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }
 
-export default async function TripDetailsPage({ params }: TripDetailsPageProps) {
+export default async function TripDetailsPage({ params, searchParams }: TripDetailsPageProps) {
   const { id } = await params;
+  const { tab } = await searchParams;
   
-  // Fetch trip details, itinerary data, and expenses concurrently
-  const [trip, initialStops, expenses] = await Promise.all([
+  // Fetch trip details, itinerary data, expenses, checklist, and notes concurrently
+  const [trip, initialStops, expenses, checklistItems, travelNotes] = await Promise.all([
     getTripById(id),
     getItinerary(id),
     getExpenses(id),
+    getChecklistItems(id),
+    getTravelNotes(id),
   ]);
 
   if (!trip) {
@@ -75,10 +83,12 @@ export default async function TripDetailsPage({ params }: TripDetailsPageProps) 
         </div>
       </div>
 
-      <Tabs defaultValue="itinerary" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-[400px] mb-8">
+      <Tabs defaultValue={tab ?? "itinerary"} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 max-w-[600px] mb-8">
           <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
           <TabsTrigger value="finances">Finances</TabsTrigger>
+          <TabsTrigger value="checklist">Checklist</TabsTrigger>
+          <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
         
         <TabsContent value="itinerary" className="mt-0">
@@ -87,6 +97,31 @@ export default async function TripDetailsPage({ params }: TripDetailsPageProps) 
         
         <TabsContent value="finances" className="mt-0">
           <FinanceDashboard trip={trip} expenses={expenses} stops={initialStops} />
+        </TabsContent>
+
+        <TabsContent value="checklist" className="mt-0">
+          <ChecklistModule
+            tripId={trip.id}
+            initialItems={checklistItems.map((item) => ({
+              id: item.id,
+              title: item.title,
+              category: item.category as any, // type adjustment to match prisma client
+              isDone: item.isDone,
+            }))}
+          />
+        </TabsContent>
+
+        <TabsContent value="notes" className="mt-0">
+          <NotesModule
+            tripId={trip.id}
+            initialNotes={travelNotes.map((n) => ({
+              id: n.id,
+              title: n.title ?? null,
+              content: n.content,
+              createdAt: new Date(n.createdAt),
+              updatedAt: new Date(n.updatedAt),
+            }))}
+          />
         </TabsContent>
       </Tabs>
     </div>

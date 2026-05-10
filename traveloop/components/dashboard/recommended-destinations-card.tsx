@@ -3,7 +3,6 @@
 import { Bookmark, Star } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Destination = {

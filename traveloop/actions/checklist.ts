@@ -65,7 +65,7 @@ export async function addChecklistItem(
     data: { tripId, title: title.trim(), category, isDone: false },
   });
 
-  revalidatePath(`/app/trips/${tripId}/checklist`);
+  revalidatePath(`/app/trips/${tripId}`);
   return item;
 }
 
@@ -81,7 +81,7 @@ export async function toggleChecklistItem(itemId: string, isDone: boolean) {
     data: { isDone },
   });
 
-  revalidatePath(`/app/trips/${item.tripId}/checklist`);
+  revalidatePath(`/app/trips/${item.tripId}`);
 }
 
 // ── Delete ─────────────────────────────────────────────────────────────────
@@ -93,7 +93,7 @@ export async function deleteChecklistItem(itemId: string) {
 
   await prisma.checklistItem.delete({ where: { id: itemId } });
 
-  revalidatePath(`/app/trips/${item.tripId}/checklist`);
+  revalidatePath(`/app/trips/${item.tripId}`);
 }
 
 // ── Reset (unpack all) ─────────────────────────────────────────────────────
@@ -108,5 +108,5 @@ export async function resetChecklist(tripId: string) {
     data: { isDone: false },
   });
 
-  revalidatePath(`/app/trips/${tripId}/checklist`);
+  revalidatePath(`/app/trips/${tripId}`);
 }

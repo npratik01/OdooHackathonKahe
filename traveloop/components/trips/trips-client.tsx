@@ -79,7 +79,7 @@ export function TripsClient({ initialTrips }: TripsClientProps) {
     startTransition(async () => {
       try {
         const trip = await createTrip(form);
-        router.push(`/app/trips/${trip.id}/checklist`);
+        router.push(`/app/trips/${trip.id}?tab=checklist`);
       } catch (e) {
         setFormError(e instanceof Error ? e.message : "Failed to create trip.");
       }
@@ -205,7 +205,7 @@ export function TripsClient({ initialTrips }: TripsClientProps) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {trips.map((trip) => (
-            <Link key={trip.id} href={`/app/trips/${trip.id}/checklist`}>
+            <Link key={trip.id} href={`/app/trips/${trip.id}?tab=checklist`}>
               <div className="group bg-card hover:border-primary/40 relative cursor-pointer overflow-hidden rounded-xl border p-5 transition-all duration-200 hover:shadow-md">
                 {/* Status badge */}
                 <div className="mb-3 flex items-center justify-between">
