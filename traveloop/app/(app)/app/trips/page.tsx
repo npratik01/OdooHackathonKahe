@@ -1,14 +1,21 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { listUserTrips } from "@/actions/trips";
+import { TripsClient } from "@/components/trips/trips-client";
 
-export default function TripsPage() {
+export const metadata = {
+  title: "My Trips — Traveloop",
+  description: "View and manage all your travel trips.",
+};
+
+export default async function TripsPage() {
+  const trips = await listUserTrips();
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Trips</CardTitle>
-      </CardHeader>
-      <CardContent className="text-muted-foreground text-sm">
-        Coming soon.
-      </CardContent>
-    </Card>
+    <TripsClient
+      initialTrips={trips.map((t) => ({
+        ...t,
+        startDate: new Date(t.startDate),
+        endDate: new Date(t.endDate),
+      }))}
+    />
   );
 }
