@@ -165,6 +165,7 @@ model Trip {
   endDate     DateTime
   status      TripStatus     @default(DRAFT)
   visibility  TripVisibility @default(PRIVATE)
+  slug        String?        @unique
   budget      Decimal?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
@@ -178,6 +179,7 @@ model Trip {
   @@index([userId, startDate])
   @@index([status])
   @@index([destination])
+  @@index([slug])
 }
 
 model TripStop {

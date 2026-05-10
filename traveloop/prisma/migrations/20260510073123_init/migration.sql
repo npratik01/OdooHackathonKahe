@@ -67,6 +67,7 @@ CREATE TABLE "Trip" (
     "endDate" DATETIME NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'DRAFT',
     "visibility" TEXT NOT NULL DEFAULT 'PRIVATE',
+    "slug" TEXT,
     "budget" DECIMAL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
@@ -203,6 +204,9 @@ CREATE INDEX "PasswordResetToken_userId_expiresAt_idx" ON "PasswordResetToken"("
 CREATE INDEX "PasswordResetToken_expiresAt_idx" ON "PasswordResetToken"("expiresAt");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Trip_slug_key" ON "Trip"("slug");
+
+-- CreateIndex
 CREATE INDEX "Trip_userId_startDate_idx" ON "Trip"("userId", "startDate");
 
 -- CreateIndex
@@ -210,6 +214,9 @@ CREATE INDEX "Trip_status_idx" ON "Trip"("status");
 
 -- CreateIndex
 CREATE INDEX "Trip_destination_idx" ON "Trip"("destination");
+
+-- CreateIndex
+CREATE INDEX "Trip_slug_idx" ON "Trip"("slug");
 
 -- CreateIndex
 CREATE INDEX "TripStop_tripId_idx" ON "TripStop"("tripId");

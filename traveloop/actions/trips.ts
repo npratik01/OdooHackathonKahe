@@ -1,20 +1,12 @@
 "use server";
-<<<<<<< HEAD
-
-import { revalidatePath } from "next/cache";
-import { TripStatus } from "@prisma/client";
-
-import { requireAuth } from "@/lib/auth-utils";
-import { prisma } from "@/lib/db";
-=======
->>>>>>> 44267f479f2433a29123b499e50785e657bd0caf
 
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { Trip, TripStatus, TripVisibility } from "@prisma/client";
-import { getCurrentUser } from "@/lib/auth-utils";
+
+import { requireAuth } from "@/lib/auth-utils";
 import { prisma } from "@/lib/db";
 import { TripFormData, TripSchema } from "@/lib/validations/trips";
 
@@ -22,8 +14,7 @@ import { TripFormData, TripSchema } from "@/lib/validations/trips";
 
 export async function uploadImage(formData: FormData): Promise<{ url?: string; error?: string }> {
   try {
-    const user = await getCurrentUser();
-    if (!user) return { error: "Unauthorized" };
+    const user = await requireAuth();
 
     const file = formData.get("image") as File;
     if (!file || !(file instanceof File)) return { error: "No file provided" };
@@ -59,17 +50,13 @@ export async function uploadImage(formData: FormData): Promise<{ url?: string; e
 // ── Trip Queries ────────────────────────────────────────────────────────────
 
 export async function getTrips(): Promise<Trip[]> {
-  if (!process.env.DATABASE_URL) return [];
-  const user = await getCurrentUser();
-  if (!user) return [];
-
+  const user = await requireAuth();
   return prisma.trip.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
 }
 
-<<<<<<< HEAD
 export async function listUserTrips() {
   const user = await requireAuth();
 
@@ -93,11 +80,27 @@ export async function listUserTrips() {
   });
 }
 
+export async function getTripById(tripId: string) {
+  const user = await requireAuth();
+
+  const trip = await prisma.trip.findFirst({
+    where: { id: tripId, userId: user.id },
+  });
+
+  if (!trip) throw new Error("Trip not found");
+  return trip;
+}
+
+// ── Trip Mutations ──────────────────────────────────────────────────────────
+
 export async function createTrip(data: {
   name: string;
   destination: string;
-  startDate: string;
-  endDate: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  description?: string;
+  coverImage?: string;
+  budget?: number;
 }) {
   const user = await requireAuth();
 
@@ -113,6 +116,8 @@ export async function createTrip(data: {
       destination: data.destination.trim(),
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate),
+      description: data.description,
+      coverImage: data.coverImage,
       status: TripStatus.PLANNED,
     },
   });
@@ -121,73 +126,13 @@ export async function createTrip(data: {
   return trip;
 }
 
-export async function getTripById(tripId: string) {
-  const user = await requireAuth();
-
-  const trip = await prisma.trip.findFirst({
-    where: { id: tripId, userId: user.id },
-    select: {
-      id: true,
-      name: true,
-      destination: true,
-      startDate: true,
-      endDate: true,
-      status: true,
-    },
-  });
-
-  if (!trip) throw new Error("Trip not found");
-  return trip;
-=======
-export async function getTripById(id: string): Promise<Trip | null> {
-  if (!process.env.DATABASE_URL) return null;
-  const user = await getCurrentUser();
-  if (!user) return null;
-
-  return prisma.trip.findUnique({
-    where: { id, userId: user.id },
-  });
-}
-
-// ── Trip Mutations ──────────────────────────────────────────────────────────
-
-export async function createTrip(data: TripFormData): Promise<{ success?: boolean; error?: string }> {
-  try {
-    const user = await getCurrentUser();
-    if (!user) return { error: "Unauthorized" };
-
-    const parsed = TripSchema.safeParse(data);
-    if (!parsed.success) return { error: "Invalid data" };
-
-    if (!process.env.DATABASE_URL) return { error: "Database not connected" };
-
-    await prisma.trip.create({
-      data: {
-        ...parsed.data,
-        userId: user.id,
-      },
-    });
-
-    revalidatePath("/app/trips");
-    revalidatePath("/app");
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to create trip:", error);
-    return { error: "Failed to create trip" };
-  }
-}
-
 export async function updateTrip(id: string, data: TripFormData): Promise<{ success?: boolean; error?: string }> {
   try {
-    const user = await getCurrentUser();
-    if (!user) return { error: "Unauthorized" };
+    const user = await requireAuth();
 
     const parsed = TripSchema.safeParse(data);
     if (!parsed.success) return { error: "Invalid data" };
 
-    if (!process.env.DATABASE_URL) return { error: "Database not connected" };
-
-    // Ensure user owns trip
     const trip = await prisma.trip.findUnique({ where: { id } });
     if (!trip || trip.userId !== user.id) return { error: "Trip not found or unauthorized" };
 
@@ -208,12 +153,8 @@ export async function updateTrip(id: string, data: TripFormData): Promise<{ succ
 
 export async function deleteTrip(id: string): Promise<{ success?: boolean; error?: string }> {
   try {
-    const user = await getCurrentUser();
-    if (!user) return { error: "Unauthorized" };
+    const user = await requireAuth();
 
-    if (!process.env.DATABASE_URL) return { error: "Database not connected" };
-
-    // Ensure user owns trip
     const trip = await prisma.trip.findUnique({ where: { id } });
     if (!trip || trip.userId !== user.id) return { error: "Trip not found or unauthorized" };
 
@@ -230,10 +171,7 @@ export async function deleteTrip(id: string): Promise<{ success?: boolean; error
 
 export async function duplicateTrip(id: string): Promise<{ success?: boolean; error?: string }> {
   try {
-    const user = await getCurrentUser();
-    if (!user) return { error: "Unauthorized" };
-
-    if (!process.env.DATABASE_URL) return { error: "Database not connected" };
+    const user = await requireAuth();
 
     const trip = await prisma.trip.findUnique({ where: { id } });
     if (!trip || trip.userId !== user.id) return { error: "Trip not found or unauthorized" };
@@ -258,5 +196,4 @@ export async function duplicateTrip(id: string): Promise<{ success?: boolean; er
     console.error("Failed to duplicate trip:", error);
     return { error: "Failed to duplicate trip" };
   }
->>>>>>> 44267f479f2433a29123b499e50785e657bd0caf
 }

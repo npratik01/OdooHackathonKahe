@@ -70,16 +70,19 @@ export function TripForm({ initialData }: TripFormProps) {
     setError(undefined);
     setSuccess(undefined);
 
-    const res = initialData
-      ? await updateTrip(initialData.id, values)
-      : await createTrip(values);
-
-    if (res?.error) {
-      setError(res.error);
-    } else {
+    try {
+      if (initialData) {
+        const res = await updateTrip(initialData.id, values);
+        if (res?.error) throw new Error(res.error);
+      } else {
+        await createTrip(values);
+      }
+      
       setSuccess(`Trip ${initialData ? "updated" : "created"} successfully!`);
       router.push("/app/trips");
       router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
     }
   };
 

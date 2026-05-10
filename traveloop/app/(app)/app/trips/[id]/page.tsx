@@ -12,6 +12,7 @@ import { ItineraryBuilder } from "@/components/itinerary/itinerary-builder";
 import { FinanceDashboard } from "@/components/finances/finance-dashboard";
 import { ChecklistModule } from "@/components/checklist/checklist-module";
 import { NotesModule } from "@/components/notes/notes-module";
+import { ShareTripDialog } from "@/components/trips/share-trip-dialog";
 
 export const metadata = {
   title: "Trip Details | Traveloop",
@@ -50,7 +51,7 @@ export default async function TripDetailsPage({ params, searchParams }: TripDeta
         </div>
         
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary" className="bg-background/80 backdrop-blur-md">
               {trip.visibility === "PUBLIC" ? <Globe2 className="mr-1 h-3 w-3" /> : <Lock className="mr-1 h-3 w-3" />}
               {trip.visibility === "PUBLIC" ? "Public" : "Private"}
@@ -58,6 +59,13 @@ export default async function TripDetailsPage({ params, searchParams }: TripDeta
             <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">
               {trip.status}
             </Badge>
+            <div className="ml-auto">
+              <ShareTripDialog 
+                tripId={trip.id} 
+                initialVisibility={trip.visibility} 
+                initialSlug={trip.slug} 
+              />
+            </div>
           </div>
           
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
