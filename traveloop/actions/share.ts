@@ -37,6 +37,7 @@ export async function publishTrip(tripId: string) {
   });
 
   revalidatePath(`/app/trips/${tripId}`);
+  revalidatePath("/app/discover");
   return updated;
 }
 
@@ -59,6 +60,7 @@ export async function unpublishTrip(tripId: string) {
   });
 
   revalidatePath(`/app/trips/${tripId}`);
+  revalidatePath("/app/discover");
 }
 
 export async function getPublicTrip(slug: string) {
@@ -87,4 +89,30 @@ export async function getPublicTrip(slug: string) {
   });
 
   return trip;
+}
+
+export async function listPublicTrips() {
+  const user = await requireAuth();
+
+  return prisma.trip.findMany({
+    where: {
+      visibility: TripVisibility.PUBLIC,
+      // Optional: hide user's own trips from their discovery page, or keep it to see how it looks
+      // Let's keep all public trips for a rich social feel, or we can filter it. Let's keep it!
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+    include: {
+      user: {
+        select: { name: true, image: true },
+      },
+      _count: {
+        select: {
+          stops: true,
+          travelNotes: true,
+        },
+      },
+    },
+  });
 }
